@@ -4,7 +4,7 @@
             <el-row class="flex">
                 <el-col :span="12" class="logo-container flex">
                     <img src="../../assets/logo.png" alt="logo" class="logo">
-                    <span class="title">算法实验展示系统</span>
+                    <span class="title">机器人实验平台</span>
                 </el-col>
                 <el-col :span="12" class="user flex">
                     <div class="userinfo flex-center">
@@ -44,14 +44,14 @@
                             <el-menu-item index="1-1"
                                 @click.native.prevent.stop="goPath('addtest')">新建实验</el-menu-item>
                             <el-menu-item index="1-2"
-                                @click.native.prevent.stop="goPath('reserveinfo')">实验展示</el-menu-item>
+                                @click.native.prevent.stop="goPath('imageinfo')">实验展示</el-menu-item>
                         </el-submenu>
                         <el-menu-item index="3" @click.native.prevent.stop="goPath('feedback')">问题反馈</el-menu-item>
                         <el-menu-item index="4" style="position: relative;"
-                            @click.native.prevent.stop="goPath('notice')">
+                            @click.native.prevent.stop="goPath('container')">
                             <i v-if="(readlist.length > 0)" class="el-icon-warning"
                                 style="position: absolute;left: 90%;top: 30%;transform: translate(-90%,-30%);color: tomato;"></i>
-                            <span slot="title">消息通知</span>
+                            <span slot="title">消息容器</span>
                         </el-menu-item>
                     </el-menu>
                 </el-col>
@@ -69,7 +69,7 @@
                                     <el-dropdown-item
                                         @click.native.prevent.stop="goUserPath('fmyinfo')">个人信息</el-dropdown-item>
                                     <el-dropdown-item
-                                        @click.native.prevent.stop="goReserveInfo('reserveinfo')">查看实验</el-dropdown-item>
+                                        @click.native.prevent.stop="goimageInfo('imageinfo')">查看实验</el-dropdown-item>
                                     <el-dropdown-item @click.native.prevent.stop="logout">退出</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
@@ -104,25 +104,18 @@ export default {
                 {
                     icon: 'el-icon-s-claim',
                     name: '实验管理',
-                    path: 'reserve',
+                    path: 'image',
                     children: [
-                        { path: 'reservelist', name: '实验列表' }
+                        { path: 'imagelist', name: '实验列表' }
                     ],
                 },
-                // {
-                //     icon: 'el-icon-s-ticket',
-                //     name: '座位管理',
-                //     path: 'seat',
-                //     children: [
-                //         { path: 'seatlist', name: '座位列表' }
-                //     ]
-                // },
+
                 {
                     icon: 'el-icon-message-solid',
-                    name: '通知管理',
-                    path: 'notice',
+                    name: '容器管理',
+                    path: 'container',
                     children: [
-                        { path: 'noticelist', name: '通知列表' }
+                        { path: 'containerlist', name: '容器列表' }
                     ]
                 },
             ],
@@ -171,7 +164,7 @@ export default {
             this.goPath(path)
         },
         // 去预约查看页
-        goReserveInfo(path) {
+        goimageInfo(path) {
             this.$refs.frontHeadNav.activeIndex = '1-2'
             this.goPath(path)
         },

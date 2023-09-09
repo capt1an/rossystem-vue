@@ -50,25 +50,17 @@ export default {
                 {
                     icon: 'el-icon-s-claim',
                     name: '实验管理',
-                    path: 'reserve',
+                    path: 'image',
                     children: [
-                        { path: 'reservelist', name: '实验列表' }
+                        { path: 'imagelist', name: '实验列表' }
                     ],
                 },
-                // {
-                //     icon: 'el-icon-s-ticket',
-                //     name: '座位管理',
-                //     path: 'seat',
-                //     children: [
-                //         { path: 'seatlist', name: '座位列表' }
-                //     ]
-                // },
                 {
                     icon: 'el-icon-message-solid',
-                    name: '通知管理',
-                    path: 'notice',
+                    name: '容器管理',
+                    path: 'container',
                     children: [
-                        { path: 'noticelist', name: '通知列表' }
+                        { path: 'containerlist', name: '容器列表' }
                     ]
                 },
             ],

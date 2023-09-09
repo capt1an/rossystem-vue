@@ -1,10 +1,10 @@
 <template>
     <div class="login maxWH flex-center">
-        <el-form ref="loginForm" :model="loginForm" label-color="#fff" label-width="80px" :rules="rules"
-            class="login-form" hide-required-asterisk @keyup.native.enter="login('loginForm')">
-            <el-form-item prop="account" class="login-item">
+        <el-form ref="loginForm" :model="loginForm" label-color="#fff" label-width="80px" :rules="rules" class="login-form"
+            hide-required-asterisk @keyup.native.enter="login('loginForm')">
+            <el-form-item prop="username" class="login-item">
                 <span slot="label"><i class="el-icon-user"></i>账号</span>
-                <el-input v-model.trim="loginForm.account" autocomplete="off" placeholder="请输入账号"></el-input>
+                <el-input v-model.trim="loginForm.username" autocomplete="off" placeholder="请输入账号"></el-input>
             </el-form-item>
             <el-form-item prop="password" class="login-item">
                 <span slot="label"><i class="el-icon-unlock"></i>密码</span>
@@ -50,11 +50,11 @@ export default {
         }
         return {
             rules: {
-                account: [{ required: true, trigger: 'blur', validator: validataAccount }],
+                username: [{ required: true, trigger: 'blur', validator: validataAccount }],
                 password: [{ required: true, trigger: 'blur', validator: validataPassword }]
             },
             loginForm: {
-                account: getAccount() || '',
+                username: getAccount() || '',
                 password: ''
             },
         }
@@ -66,14 +66,16 @@ export default {
         },
         // 用户登录
         async login(formname) { //关键字async放到函数前面，用于表示函数是一个异步函数
-            await this.$refs[formname].validate(async vaild => {
+            await this.$refs[formname].validate(async vaild => { //预验证
                 if (vaild) {
                     try {
                         await this.$store.dispatch('userLogin', JSON.stringify(this.loginForm))
                             .then(res => {
                                 this.resetForm(formname)
+                                console.log("没跳")
                                 // this.$message({ type: 'success', message: res })
                                 this.$router.push('/')
+                                console.log("跳了")
                             }).catch(err => this.$message({ type: 'warning', message: err.message }))
                     } catch (e) {
                         this.$message({ type: 'warning', message: e.message })

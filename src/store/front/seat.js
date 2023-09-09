@@ -1,4 +1,4 @@
-import { reqFrontGetSeatList, reqFrontReserveSeat, reqFrontLeaveSeat } from '@/api'
+import { reqFrontGetSeatList, reqFrontimageSeat, reqFrontLeaveSeat } from '@/api'
 
 
 
@@ -12,8 +12,8 @@ const mutations = {
         state.front_seat_list = front_seat_list
     },
     // 获取预约信息
-    FRONTGETRESERVEINFO(state, front_reserve_info) {
-        state.front_reserve_info = front_reserve_info
+    FRONTGETimageINFO(state, front_image_info) {
+        state.front_image_info = front_image_info
     },
 }
 
@@ -31,8 +31,8 @@ const actions = {
         }
     },
     // 预约座位
-    async frontReserveSeat({ commit }, info) {//eslint-disable-line no-unused-vars
-        let result = await reqFrontReserveSeat(info)
+    async frontimageSeat({ commit }, info) {//eslint-disable-line no-unused-vars
+        let result = await reqFrontimageSeat(info)
         result = result.data
         // console.log(result)
         if (result.status === 0) {

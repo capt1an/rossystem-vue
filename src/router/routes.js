@@ -37,12 +37,12 @@ export default [
                         component: () => import('@/views/Index/Back/SeatList')
                     },
                     {
-                        path: 'noticelist',
-                        component: () => import('@/views/Index/Back/NoticeList')
+                        path: 'containerlist',
+                        component: () => import('@/views/Index/Back/containerList')
                     },
                     {
-                        path: 'reservelist',
-                        component: () => import('@/views/Index/Back/ReserveList')
+                        path: 'imagelist',
+                        component: () => import('@/views/Index/Back/ImageList')
                     }
                 ]
             },
@@ -55,16 +55,16 @@ export default [
                         component: () => import('@/views/Index/Front/MyInfo')
                     },
                     {
-                        path: 'notice',
-                        component: () => import('@/views/Index/Front/Notice')
+                        path: 'container',
+                        component: () => import('@/views/Index/Front/container')
                     },
                     {
-                        path: 'reserveseat',
-                        component: () => import('@/views/Index/Front/ReserveSeat')
+                        path: 'imageseat',
+                        component: () => import('@/views/Index/Front/imageSeat')
                     },
                     {
-                        path: 'reserveinfo',
-                        component: () => import('@/views/Index/Front/ReserveInfo')
+                        path: 'imageinfo',
+                        component: () => import('@/views/Index/Front/imageInfo')
                     },
                     {
                         path: 'feedback',

@@ -49,28 +49,33 @@ router.beforeEach(async (to, from, next) => {
     let readlist = store.state.login.readlist || []//eslint-disable-line no-unused-vars
     let identity = store.state.login.identity || ''//eslint-disable-line no-unused-vars
     if (isLogin) {
-        if (username) {
+        // if (1) {
+            console.log("用户id：" + user_id)
             if (to.path.includes('login')) next('/')
             else next()
-        } else {
-            // 没有用户信息
-            try {
-                // 获取用户信息页面展示
-                await store.dispatch('getUserInfo', { user_id })
-                    .then(res => {//eslint-disable-line no-unused-vars
-                        next()
-                    })
-                    .catch(async err => {//eslint-disable-line no-unused-vars
-                        // 登录信息失效了,重新登录
-                        await store.dispatch('userLogout')
-                        next('/login')
-                    })
-            } catch (e) {
-                // 登录信息失效了,重新登录
-                await store.dispatch('userLogout')
-                next('/login')
-            }
-        }
+        // } else {
+        //     // 没有用户信息
+        //     console.log("try")
+        //     try {
+        //         // 获取用户信息页面展示
+        //         console.log("准备调用 getUserInfo 方法");
+        //         await store.dispatch('getUserInfo', { user_id })
+        //             .then(res => {//eslint-disable-line no-unused-vars
+        //                 console.log("getUserInfo 方法调用成功");
+        //                 next()
+        //             })
+        //             .catch(async err => {//eslint-disable-line no-unused-vars
+        //                 // 登录信息失效了,重新登录
+        //                 console.error("获取用户信息时出现错误：", err);
+        //                 await store.dispatch('userLogout')
+        //                 next('/login')
+        //             })
+        //     } catch (e) {
+        //         // 登录信息失效了,重新登录
+        //         await store.dispatch('userLogout')
+        //         next('/login')
+        //     }
+        // }
     } else {
         if (to.path === '/login') next()
         else next('/login')

@@ -2,14 +2,14 @@
     <div class="myinfo maxWH flex">
         <!-- 个人信息 -->
         <el-form inline label-width="80px" label-position="right" style="width: 100%;min-width: 1000px;text-align: center;">
-            <el-form-item label="账号">
-                <el-input v-model.trim="userinfo.account" disabled></el-input>
-            </el-form-item>
             <el-form-item label="用户名">
-                <el-input v-model.trim="userinfo.username" disabled></el-input>
+                <el-input v-model="userinfo.username" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="昵称">
+                <el-input v-model.trim="userinfo.nickName" disabled></el-input>
             </el-form-item>
             <el-form-item label="身份">
-                <el-input v-model.trim="userinfo.identity" disabled></el-input>
+                <el-input v-model.trim="userinfo.role" disabled></el-input>
             </el-form-item>
         </el-form>
         <!-- 修改密码 -->

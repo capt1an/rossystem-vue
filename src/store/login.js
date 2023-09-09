@@ -9,52 +9,55 @@ const state = {
     user_id: getUserId(), // 用户id
     identity: getIdentity(), // 用户身份
     userinfo: {}, // 用户的基本信息
-    readlist: [], // 用户的未读通知列表
-    front_reserve_info: {}, // 预约信息
-    echarts_info: {}, // 图表信息
-    get_time_dict: {}, // 预约时间段次数, 用于排序
-    get_time_arr: [],
-    get_time_val_arr: [], // 预约时间段次数数组的数字
+    // readlist: [], // 用户的未读容器列表
+    // front_image_info: {}, // 预约信息
+    // echarts_info: {}, // 图表信息
+    // get_time_dict: {}, // 预约时间段次数, 用于排序
+    // get_time_arr: [],
+    // get_time_val_arr: [], // 预约时间段次数数组的数字
 }
 
 const mutations = {
     // 用户登录
     USERLOGIN(state, userinfo) {
-        state.user_id = userinfo.user_id
-        state.identity = userinfo.identity
+        state.user_id = userinfo.id
+        state.identity = userinfo.role
     },
     // 获取用户基本信息
     GETUSERINFO(state, result) {
         state.userinfo = result.data
-        state.readlist = result.readlist
-        state.front_reserve_info = result.reserve_info
-        state.echarts_info = result.echarts_info
-        state.get_time_dict = result.get_time_dict
+        // state.readlist = result.readlist
+        // state.front_image_info = result.image_info
+        // state.echarts_info = result.echarts_info
+        // state.get_time_dict = result.get_time_dict
+        // state.get_time_dict = {}
         // 排序
-        let keyArr = Object.keys(state.get_time_dict).sort(function (a, b) {
-            return state.get_time_dict[b] - state.get_time_dict[a]
-        })
-        let time_arr = []
-        let time_val_arr = []
-        for (let key of keyArr) {
-            if (key === 'nine_time_count') key = '9点'
-            else if (key === 'ten_time_count') key = '10点'
-            else if (key === 'eleven_time_count') key = '11点'
-            else if (key === 'twelve_time_count') key = '12点'
-            else if (key === 'thirteen_time_count') key = '13点'
-            else if (key === 'fourteen_time_count') key = '14点'
-            else if (key === 'fifteen_time_count') key = '15点'
-            else if (key === 'sixteen_time_count') key = '16点'
-            else if (key === 'seventeen_time_count') key = '17点'
-            else if (key === 'eighteen_time_count') key = '18点'
-            else if (key === 'nineteen_time_count') key = '19点'
-            else if (key === 'twenty_time_count') key = '20点'
-            else if (key === 'twenty_one_time_count') key = '21点'
-            time_arr.push(`${key}:${state.get_time_dict[key]}`)
-            time_val_arr.push(state.get_time_dict[key])
-        }
-        state.get_time_arr = time_arr.slice(0, 7)
-        state.get_time_val_arr = time_val_arr
+        // console.log(state.get_time_dict)
+
+        // let keyArr = Object.keys(state.get_time_dict).sort(function (a, b) {
+        //     return state.get_time_dict[b] - state.get_time_dict[a]
+        // })
+        // let time_arr = []
+        // let time_val_arr = []
+        // for (let key of keyArr) {
+        //     if (key === 'nine_time_count') key = '9点'
+        //     else if (key === 'ten_time_count') key = '10点'
+        //     else if (key === 'eleven_time_count') key = '11点'
+        //     else if (key === 'twelve_time_count') key = '12点'
+        //     else if (key === 'thirteen_time_count') key = '13点'
+        //     else if (key === 'fourteen_time_count') key = '14点'
+        //     else if (key === 'fifteen_time_count') key = '15点'
+        //     else if (key === 'sixteen_time_count') key = '16点'
+        //     else if (key === 'seventeen_time_count') key = '17点'
+        //     else if (key === 'eighteen_time_count') key = '18点'
+        //     else if (key === 'nineteen_time_count') key = '19点'
+        //     else if (key === 'twenty_time_count') key = '20点'
+        //     else if (key === 'twenty_one_time_count') key = '21点'
+        //     time_arr.push(`${key}:${state.get_time_dict[key]}`)
+        //     time_val_arr.push(state.get_time_dict[key])
+        // }
+        // state.get_time_arr = time_arr.slice(0, 7)
+        // state.get_time_val_arr = time_val_arr
     },
     // 退出登录
     CLEAR(state, _) {//eslint-disable-line no-unused-vars
@@ -65,47 +68,47 @@ const mutations = {
         removeIdentity()
     },
     // 
-    GETTIMEVALUEARR(state, result) {
-        state.get_time_dict = result.data
-        // 排序
-        let keyArr = Object.keys(state.get_time_dict).sort(function (a, b) {
-            return state.get_time_dict[b] - state.get_time_dict[a]
-        })
-        let time_arr = []
-        let time_val_arr = []
-        for (let key of keyArr) {
-            if (key === 'nine_time_count') key = '9点'
-            else if (key === 'ten_time_count') key = '10点'
-            else if (key === 'eleven_time_count') key = '11点'
-            else if (key === 'twelve_time_count') key = '12点'
-            else if (key === 'thirteen_time_count') key = '13点'
-            else if (key === 'fourteen_time_count') key = '14点'
-            else if (key === 'fifteen_time_count') key = '15点'
-            else if (key === 'sixteen_time_count') key = '16点'
-            else if (key === 'seventeen_time_count') key = '17点'
-            else if (key === 'eighteen_time_count') key = '18点'
-            else if (key === 'nineteen_time_count') key = '19点'
-            else if (key === 'twenty_time_count') key = '20点'
-            else if (key === 'twenty_one_time_count') key = '21点'
-            time_arr.push(`${key}:${state.get_time_dict[key]}`)
-            time_val_arr.push(state.get_time_dict[key])
-        }
-        state.get_time_arr = time_arr.slice(0, 7)
-        state.get_time_val_arr = time_val_arr
-    },
+    // GETTIMEVALUEARR(state, result) {
+    //     state.get_time_dict = result.data
+    //     // 排序
+    //     let keyArr = Object.keys(state.get_time_dict).sort(function (a, b) {
+    //         return state.get_time_dict[b] - state.get_time_dict[a]
+    //     })
+    //     let time_arr = []
+    //     let time_val_arr = []
+    //     for (let key of keyArr) {
+    //         if (key === 'nine_time_count') key = '9点'
+    //         else if (key === 'ten_time_count') key = '10点'
+    //         else if (key === 'eleven_time_count') key = '11点'
+    //         else if (key === 'twelve_time_count') key = '12点'
+    //         else if (key === 'thirteen_time_count') key = '13点'
+    //         else if (key === 'fourteen_time_count') key = '14点'
+    //         else if (key === 'fifteen_time_count') key = '15点'
+    //         else if (key === 'sixteen_time_count') key = '16点'
+    //         else if (key === 'seventeen_time_count') key = '17点'
+    //         else if (key === 'eighteen_time_count') key = '18点'
+    //         else if (key === 'nineteen_time_count') key = '19点'
+    //         else if (key === 'twenty_time_count') key = '20点'
+    //         else if (key === 'twenty_one_time_count') key = '21点'
+    //         time_arr.push(`${key}:${state.get_time_dict[key]}`)
+    //         time_val_arr.push(state.get_time_dict[key])
+    //     }
+    //     state.get_time_arr = time_arr.slice(0, 7)
+    //     state.get_time_val_arr = time_val_arr
+    // },
 }
 
 const actions = {
     // 用户登录
     async userLogin({ commit }, user) {
         let result = await reqUserLogin(user)
-        result = result.data
-        // console.log(result)
-        if (result.status === 0) {
-            commit('USERLOGIN', result.data)
-            setUserId(result.data.user_id)
-            setIdentity(result.data.identity)
-            setAccount(result.data.account)
+        console.log(result)
+        if (result.data.code === 0) {
+            // localStorage.setItem('userInfo', JSON.stringify(result.data.data))
+            commit('USERLOGIN', result.data.data)
+            setUserId(result.data.id)
+            setIdentity(result.data.role)
+            setAccount(result.data.username)
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
@@ -173,8 +176,8 @@ const getters = {
     readlist(state) {
         return state.readlist || []
     },
-    front_reserve_info(state) {
-        return state.front_reserve_info || {}
+    front_image_info(state) {
+        return state.front_image_info || {}
     },
     echarts_info(state) {
         return state.echarts_info || {}

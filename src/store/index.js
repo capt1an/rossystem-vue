@@ -7,10 +7,10 @@ import login from './login'
 // 后台管理 vuex使用的注释见./back/user
 import backuser from './back/user'
 import backseat from './back/seat'
-import backnotice from './back/notice'
-import backreserve from './back/reserve'
+import backcontainer from './back/container'
+import backimage from './back/image'
 // 前台显示
-import frontnotice from './front/notice'
+import frontcontainer from './front/container'
 import frontseat from './front/seat'
 import fronttest from './front/test'
 // 
@@ -20,10 +20,10 @@ export default new Vuex.Store({
         // 后台管理
         backuser,
         backseat,
-        backnotice,
-        backreserve,
+        backcontainer,
+        backimage,
         // 前台显示
-        frontnotice,
+        frontcontainer,
         frontseat,
         fronttest,
     }

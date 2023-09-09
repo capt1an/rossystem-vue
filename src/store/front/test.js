@@ -54,16 +54,16 @@ const actions = {
         }
     },
     // 封禁用户
-    async delUser({ commit }, user = {}) {//eslint-disable-line no-unused-vars
-        let result = await reqDelUser(user)
-        result = result.data
-        // console.log(result)
-        if (result.status === 0) {
-            return result.msg || 'ok'
-        } else {
-            return Promise.reject(new Error(result.msg || 'fail'))
-        }
-    },
+    // async delUser({ commit }, user = {}) {//eslint-disable-line no-unused-vars
+    //     let result = await reqDelUser(user)
+    //     result = result.data
+    //     // console.log(result)
+    //     if (result.status === 0) {
+    //         return result.msg || 'ok'
+    //     } else {
+    //         return Promise.reject(new Error(result.msg || 'fail'))
+    //     }
+    // },
 }
 //取值的方法 通过该方法获取组件的状态
 const getters = {
