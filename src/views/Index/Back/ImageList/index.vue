@@ -16,7 +16,8 @@
                 </el-form-item>
             </el-form>
         </div>
-        <el-button type="primary" @click.native.prevent.stop="delAllimage" style="margin: 15px 0;">添加镜像</el-button>
+        <el-button type="primary" @click.native.prevent.stop="imageAddDialog = true"
+            style="margin: 15px 0;">添加镜像</el-button>
         <!-- 列表显示预约信息 -->
         <el-table :data="imagelist" border style="width: 100%" max-height="250">
             <el-table-column prop="id" label="序号">
@@ -44,22 +45,33 @@
             :total="image_count" style="padding: 10px 0;">
         </el-pagination>
         <!-- 添加镜像 -->
-        <!-- <el-dialog title="添加镜像" :visible.sync="imageAddDialog">
-            <el-form ref="iamgeAddForm" :model="iamgeAddForm" label-width="120px" :rules="rules">
+        <el-dialog title="添加镜像" :visible.sync="imageAddDialog">
+            <el-form ref="imageAddForm" :model="imageAddForm" label-width="120px" :rules="rules">
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model.trim="iamgeAddForm.name" autocomplete="off" placeholder="请输入容器名称">
+                    <el-input v-model.trim="imageAddForm.name" autocomplete="off" placeholder="请输入实验名称">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="版本" prop="versionid">
-                    <el-input v-model.trim="containerAddForm.version" autocomplete="off" placeholder="请输入版本号">
+                <el-form-item label="版本" prop="version">
+                    <el-input v-model.trim="imageAddForm.version" autocomplete="off" placeholder="请输入版本号">
                     </el-input>
+                </el-form-item>
+                <el-form-item label="说明" prop="description">
+                    <el-input v-model.trim="imageAddForm.description" autocomplete="off">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="镜像" prop="images">
+                    <el-checkbox-group v-model="imageAddForm.images">
+                        <el-checkbox label="novnc"></el-checkbox>
+                        <el-checkbox label="roslab"></el-checkbox>
+                        <el-checkbox label="vscode"></el-checkbox>
+                    </el-checkbox-group>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" align="center">
-                <el-button type="primary" @click.native.prevent.stop="addcontainer('containerAddForm')">确 定</el-button>
-                <el-button @click.native.prevent.stop="resetForm('containerAddForm')">重 置</el-button>
+                <el-button type="primary" @click.native.prevent.stop="addimage('imageAddForm')">确 定</el-button>
+                <el-button @click.native.prevent.stop="resetForm('imageAddForm')">重 置</el-button>
             </div>
-        </el-dialog> -->
+        </el-dialog>
     </div>
 </template>
 
@@ -125,6 +137,13 @@ export default {
                 querySearch: '',
                 key: '',
             },
+
+            imageAddForm: {
+                name: '',
+                images: [],
+                version: '',
+                description: '',
+            },
         }
     },
     computed: {
@@ -173,39 +192,43 @@ export default {
                 this.$message({ type: 'warning', message: e.message })
             }
         },
-        // 移除超时的预约信息
-        // async delimage(index, rows) {
-        //     await this.$confirm('确认移除该预约信息?', '提示', {
-        //         confirmButtonText: '确定',
-        //         cancelButtonText: '取消',
-        //         type: 'warning'
-        //     }).then(async () => {
-        //         try {
-        //             const { image_id, seat_id } = rows[index]
-        //             await this.$store.dispatch('delimage', { image_id, seat_id })
-        //                 .then(async res => {
-        //                     this.$message({ type: 'success', message: res })
-        //                     // 重新获取预约信息列表
-        //                     await this.getimageList()
-        //                 }).catch(err => this.$message({ type: 'warning', message: err.message }))
-        //         } catch (e) {
-        //             console.warn(e.message)
-        //         }
-        //     }).catch(() => { this.$message({ type: 'info', message: '已取消' }) })
-        // },
+
+        // 删除镜像
+        async delimage(index, rows) {
+            const title = rows[index].id
+            const params = { id: rows[index].id }
+            await this.$confirm(`是否删除镜像 [ ${title} ] ?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(async () => {
+                try {
+                    await this.$store.dispatch('delimage', JSON.stringify(params))
+                        .then(res => {
+                            this.$message({ type: 'success', message: res })
+                            // 重新获取容器列表
+                            this.getimageList()
+                        }).catch(err => this.$message({ type: 'warning', message: err.message }))
+                } catch (e) {
+                    this.$message({ type: 'warning', message: e.message })
+                }
+            }).catch(() => {
+                this.$message({ type: 'info', message: '已取消' })
+            })
+        },
 
         //添加镜像
         async addimage(formname) {
             await this.$refs[formname].validate(async vaild => {
                 if (vaild) {
                     try {
-                        await this.$store.dispatch('addcontainer', JSON.stringify(this.containerAddForm))
+                        await this.$store.dispatch('addimage', JSON.stringify(this.imageAddForm))
                             .then(res => {
                                 this.resetForm(formname)
                                 this.imageAddDialog = false
                                 this.$message({ type: 'success', message: res })
                                 // 重新获取容器列表
-                                this.getcontainerList()
+                                this.getimageList()
                             }).catch(err => this.$message({ type: 'warning', message: err.message }))
                     } catch (e) {
                         this.$message({ type: 'warning', message: e.message })

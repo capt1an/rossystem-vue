@@ -31,7 +31,7 @@
             <el-row class="flex head-front">
                 <el-col :span="6" class="logo-container flex">
                     <img src="../../assets/logo.png" alt="logo" class="logo">
-                    <span class="title">算法实验展示系统</span>
+                    <span class="title">机器人实验平台</span>
                 </el-col>
                 <el-col :span="12" class="nav-fun">
                     <el-menu ref="frontHeadNav" default-active="0" class="el-menu-demo" mode="horizontal"

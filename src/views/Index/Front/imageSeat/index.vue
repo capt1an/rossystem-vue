@@ -1,278 +1,319 @@
 <template>
-    <div class="image-seat maxWH clearfix">
-        <!-- 头部 -->
-        <div class="header flex">
-            <span class="title"></span>
-        </div>
-        <!-- 主体 -->
-        <main class="main">
-            <!-- 已经有镜像信息了 -->
-            <div class="exist-image" v-show="(Object.keys(front_image_info).length > 0)">
-                <el-button type="text" @click.native.prevent.stop="goimageInfo">查看信息</el-button>
+    <div class="container-list maxWH clearfix">
+        <!-- 列表显示容器 -->
+        <el-table :data="containerlist" border style="width: 100%" max-height="250">
+            <el-table-column prop="name" label="容器名" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="port" label="端口" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="username" label="用户名" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="nickName" label="昵称" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="status" label="状态" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column label="操作" header-align="center" align="center">
+                <template slot-scope="scope">
+                    <div class="handler">
+                        <el-button @click.native.prevent="startContainer(scope.$index, containerlist)"
+                            @click.native.prevent.stop="containerDialog = true" type="info">
+                            启动
+                        </el-button>
+                        <el-button @click.native.prevent="delcontainer(scope.$index, containerlist)" type="danger">
+                            删除
+                        </el-button>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!-- 分页器 -->
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page"
+            :page-sizes="page_sizes" :page-size="limit" layout="total, sizes, prev, pager, next, jumper"
+            :total="container_count" style="padding: 10px 0;">
+        </el-pagination>
+        <!-- 添加 -->
+        <el-button type="primary" @click.native.prevent.stop="containerAddDialog = true"
+            style="margin: 15px 0;">添加容器</el-button>
+        <!-- 添加容器 -->
+        <el-dialog title="添加容器" :visible.sync="containerAddDialog">
+            <el-form ref="containerAddForm" :model="containerAddForm" label-width="120px" :rules="rules">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model.trim="containerAddForm.name" autocomplete="off" placeholder="请输入容器名称">
+                    </el-input>
+                </el-form-item>
+                <!-- <el-form-item label="选择添加的用户" prop="user">
+                    <el-select v-model="containerAddForm.userid" clearable placeholder="用户名">
+                        <el-option v-for="item in userlist" :key="item.id" :label="item.username" :value="item.id" />
+                    </el-select>
+                </el-form-item> -->
+                <el-form-item label="选择镜像" prop="image">
+                    <el-select v-model="containerAddForm.imageid" clearable placeholder="镜像">
+                        <el-option v-for="item in images" :key="item.value" :label="item.label" :value="item.value" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="版本号" prop="versionid">
+                    <el-input v-model.trim="containerAddForm.versionid" autocomplete="off" placeholder="请输入版本号">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="端口号" prop="ports">
+                    <el-input v-model.number="port" placeholder="输入端口号" type="number"></el-input>
+                    <span class="add-button">
+                        <el-button @click="addPort" type="primary">添加</el-button>
+                    </span>
+                </el-form-item>
+                <el-form-item label="已添加的端口号" v-for="(port, index) in containerAddForm.ports" :key="index">
+                    {{ port }}
+                    <el-button @click="removePort(index)" type="primary">删除</el-button>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer" align="center">
+                <el-button type="primary" @click.native.prevent.stop="addcontainer('containerAddForm')">确 定</el-button>
+                <el-button @click.native.prevent.stop="resetForm('containerAddForm')">重 置</el-button>
             </div>
-            <!-- 添加 -->
-        <el-button type="primary" @click.native.prevent.stop="userAddDialog = true"
-            style="margin: 15px 0;">添加用户</el-button>
-            <!-- 搜索 -->
-            
-            <div class="table">
-                <el-table :data="front_seat_list" height="350" style="width: 100%">
-                    <el-table-column prop="seat_floor" label="座位楼层">
-                    </el-table-column>
-                    <el-table-column prop="seat_no" label="座位编号">
-                    </el-table-column>
-                    <el-table-column prop="seat_status" label="座位状态">
-                        <template slot-scope="scope">
-                            <el-tag :type="scope.row.seat_status === '空闲中' ? 'info' : 'warning'">{{
-                                    scope.row.seat_status
-                            }}</el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" header-align="center">
-                        <template slot-scope="scope">
-                            <div class="handler flex-center">
-                                <el-button type="info"
-                                    :disabled="scope.row.seat_status === '空闲中' && (Object.keys(front_image_info).length < 1) ? false : true"
-                                    @click.native.prevent.stop="openimageSeat(scope.$index, front_seat_list)">
-                                    镜像
-                                </el-button>
-                            </div>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </div>
-            <!-- 镜像的遮罩页 -->
-            <el-dialog title="镜像座位" :visible.sync="imageSeatdDialog">
-                <el-form ref="frontimageSeatForm" :model="imageSeatForm" label-width="110px" :rules="rules"
-                    hide-required-asterisk>
-                    <el-form-item label="座位楼层" prop="seat_floor">
-                        <el-input disabled v-model.trim="imageSeatForm.seat_floor" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="座位编号" prop="seat_no">
-                        <el-input disabled v-model.trim="imageSeatForm.seat_no" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="镜像结束时间" prop="end_time">
-                        <el-time-picker placeholder="选择时间" v-model="imageSeatForm.end_time"
-                            style="width: 100%;"></el-time-picker>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer" align="center">
-                    <el-button type="primary" @click.native.prevent.stop="imageSeat('frontimageSeatForm')">确
-                        定</el-button>
-                    <el-button @click.native.prevent.stop="resetForm('frontimageSeatForm')">重 置</el-button>
-                </div>
-            </el-dialog>
-        </main>
+        </el-dialog>
+        <!--容器界面-->
+        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%" :before-close="handleClose">
+            <iframe src="http://127.0.0.1:8080" frameborder="0" width="100%" height="600px"></iframe>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="containerDialog = false">关 闭</el-button>
+                <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+import { Upload } from 'element-ui'
 import { mapGetters } from 'vuex'
-import getCurTime from '@/utils/getCurTime'
 export default {
-    name: 'imageSeat',
+    name: 'containerList',
     data() {
-        const validateEndTime = (rule, value, callback) => {
-            const reg = /^(\d{4})-(\d{2})-(\d{2})[\s](\d{2}):(\d{2}):(\d{2})$/
-            value = this.getDateStr(value) // 将时间转化为字符串
-            value = getCurTime(value) // 格式化
-            // 获取当前时间加上15分钟的 时间戳
-            let now = new Date().getTime() + 15 * 60 * 1000
-            // 获取选择时间的小时
-            let hour = new Date(value)
-            hour = (hour.getHours()) < 10 ? `0${hour.getHours()}` : `${hour.getHours()}`
-            hour = Number.parseInt(hour)
-            if (value.trim().length <= 0) { // 不能为空
-                callback(new Error('请选择结束时间'))
-            } else if (!reg.test(value)) { // 控制格式: yyyy-mm-dd hh:mm:ss
-                callback(new Error('时间格式不对'))
-            } else if (isNaN(hour)) {
-                callback(new Error('时间格式不对'))
-            } else if (hour < 9) { // 不能小于9点
-                callback(new Error('不能小于早上9点'))
-            } else if (hour >= 22) { // 不能大于22点
-                callback(new Error('不能大于晚上22点'))
-            } else if (new Date(value).getTime() < now) { // 不能少于15分钟
-                callback(new Error('镜像时间应不少于15分钟'))
+        const port = ''
+
+        const images = [
+            {
+                value: '1',
+                label: 'novnc',
+            },
+            {
+                value: '2',
+                label: 'vscode',
+            },
+            {
+                value: '3',
+                label: 'roslab',
+            }
+        ]
+        const options = [
+            {
+                value: 'name',
+                label: '容器名',
+            },
+            {
+                value: 'status',
+                label: '容器状态',
+            },
+            {
+                value: 'version_id',
+                label: '版本',
+            },
+            {
+                value: 'user_id',
+                label: '用户id',
+            },
+        ]
+        const validataTitle = (rule, value, callback) => {
+            const reg = /^[0-9A-Za-z\u4e00-\u9fa5,!.*&^%#+=-_:;。，！「」——~、@]{2,12}$/
+            if (value.trim().length <= 0) {
+                callback(new Error('请输入容器名称'))
+            } else if (!reg.test(value.trim())) {
+                callback(new Error('容器名称由2到12位的数字、字母、汉字或部分符号组成'))
             } else {
                 callback()
             }
         }
+
+        const validataPort = (rule, value, callback) => {
+            const reg = /^[0-9]{4,5}$/
+            if (value.trim().length <= 0) {
+                callback(new Error('请输入端口号'))
+            } else if (!reg.test(value.trim())) {
+                callback(new Error('端口号由4到5位的数字组成'))
+            } else {
+                callback()
+            }
+        }
+
+        // const validataDetail = (rule, value, callback) => {
+        //     const reg = /^[0-9A-Za-z\u4e00-\u9fa5,!.*&^%#+=-_:;。，！…. ：；，「」——~、\s@]{15,100}$/
+        //     if (value.trim().length <= 0) {
+        //         callback(new Error('请输入容器详情'))
+        //     } else if (!reg.test(value.trim())) {
+        //         callback(new Error('容器详情由15到100位的数字、字母、汉字或部分符号组成'))
+        //     } else {
+        //         callback()
+        //     }
+        // }
         return {
-            // 楼层的选择列表
-            seat_floor: [
-                { label: '全部', value: '0' },
-                { label: '1楼', value: '1' },
-                { label: '2楼', value: '2' },
-                { label: '3楼', value: '3' },
-                { label: '4楼', value: '4' },
-                { label: '5楼', value: '5' },
-            ],
-            // 搜索座位列表的表单
-            searchForm: {
-                seat_floor: '',
-            },
-            // 镜像座位的遮罩页
-            imageSeatdDialog: false,
-            // 验证规则
+            options,
+            images,
+            port,
+            // 表单验证规则
             rules: {
-                end_time: [{ required: true, trigger: ['blur', 'change'], validator: validateEndTime }],
+                name: [{ required: true, trigger: ['blur', 'change'], validator: validataTitle }],
+                // container_detail: [{ required: true, trigger: 'blur', validator: validataDetail }],
+                // ports: [{ required: true, trigger: 'blur', validator: validataPort }],
             },
-            
-            // 镜像座位的表单
-            imageSeatForm: {
-                seat_id: 0,
-                seat_floor: '', // 座位楼层
-                seat_no: '', // 座位编号
-                end_time: '', // 镜像结束时间
+            // 搜索容器列表的表单
+            searchForm: {
+                querySearch: '',
+                key: '',
+            },
+            containerAddDialog: false, // 添加新容器的表单
+            containerDialog: false, // 容器的表单
+            page: 1, // 当前页
+            limit: 8, // 初始化每页条目数
+            page_sizes: [8, 16, 30, 50, 100], // 个数选择器
+            // 添加容器的表单
+            containerAddForm: {
+                name: '',
+                userid: this.user_id,
+                imageid: '',
+                versionid: '',
+                ports: [],
             },
         }
     },
     computed: {
-        ...mapGetters(['front_seat_list', 'userinfo', 'front_image_info'])
+        ...mapGetters(['user_id', 'userlist', 'containerlist', 'container_count'])
     },
     mounted() {
-        this.searchForm.seat_floor = this.seat_floor[0].value
-        // 获取座位列表
-        this.getSeatlist()
-        // 获取用户信息
-        this.getUserInfo()
+        this.getcontainerList()
     },
     methods: {
-        // 将 中国标准时间 转化为时间字符串 yyyy-mm-dd hh:mm:ss
-        getDateStr(date) {
-            let d = new Date(date)
-            date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds()
-            date = date.toString()
-            return date
-        },
-        // 获取座位列表
-        async getSeatlist() {
-            try {
-                let seat_floor = isNaN(Number.parseInt(this.searchForm.seat_floor)) ? 0 : Number.parseInt(this.searchForm.seat_floor)
-                await this.$store.dispatch('frontGetSeatList', { seat_floor })
-            } catch (e) {
-                console.warn(e.message)
-            }
-        },
         // 重置表单
         resetForm(formname) {
             this.$refs[formname].resetFields()
         },
-        // 重置搜索表单
-        resetSearchForm(formname) {
-            this.resetForm(formname)
-            this.searchForm.seat_floor = this.seat_floor[0].value
-        },
-        // 路由判断
-        getFrontPath(path) {
-            let href = this.$route.path
-            if (href.includes('front')) {
-                return path
-            } else {
-                return 'front/' + path
+        // 启动容器
+        startContainer(index, rows) {
+            const params = { id: rows[index].id, cmd: 'start' }
+            try {
+                this.$store.dispatch('startcontainer', JSON.stringify(params))
+                    .then(res => {
+                        this.resetForm(formname)
+                        this.$message({ type: 'success', message: res })
+                        // 重新获取容器列表
+                        // this.getcontainerList()
+                    }).catch(err => this.$message({ type: 'warning', message: err.message }))
+            } catch (e) {
+                this.$message({ type: 'warning', message: e.message })
             }
         },
-        // 去哪个页面
-        goPath(path) {
-            this.$router.push(this.getFrontPath(path))
+        // 搜索
+        search() {
+            this.page = 1
+            this.limit = this.page_sizes[0]
+            this.getcontainerList()
         },
-        // 打开镜像座位的遮罩页
-        openimageSeat(index, rows) {
-            this.imageSeatdDialog = true
-            const seat = rows[index]
-            // console.log(seat)
-            this.imageSeatForm = {
-                seat_id: seat.seat_id,
-                seat_floor: seat.seat_floor,
-                seat_no: seat.seat_no,
-                end_time: '',
+        // 每页多少条目
+        handleSizeChange(val) {
+            this.limit = val
+            this.page = 1
+            this.getcontainerList()
+        },
+        // 当前第几页
+        handleCurrentChange(val) {
+            this.page = val
+            this.getcontainerList()
+        },
+        addPort() {
+            if (this.port) {
+                this.containerAddForm.ports.push(this.port);
+                this.port = '';
             }
         },
-        // 镜像座位
-        async imageSeat(formname) {
+        removePort(index) {
+            this.containerAddForm.ports.splice(index, 1);
+        },
+        // 添加容器
+        async addcontainer(formname) {
             await this.$refs[formname].validate(async vaild => {
                 if (vaild) {
+
+                    console.log("start")
                     try {
-                        const info = {
-                            user_id: this.userinfo.user_id,
-                            seat_id: this.imageSeatForm.seat_id,
-                            end_time: getCurTime(this.getDateStr(this.imageSeatForm.end_time))
-                        }
-                        await this.$store.dispatch('frontimageSeat', JSON.stringify(info))
-                            .then(async res => {
-                                await this.resetForm(formname)
-                                await this.getUserInfo()
-                                this.$notify({ title: '成功', type: 'success', message: res })
-                                this.imageSeatdDialog = false
-                                this.$bus.$emit('switchCheckNav', '1-2')
-                                this.goPath('imageinfo')
+                        await this.$store.dispatch('addcontainer', JSON.stringify(this.containerAddForm))
+                            .then(res => {
+                                this.resetForm(formname)
+                                this.containerAddDialog = false
+                                this.$message({ type: 'success', message: res })
+                                // 重新获取容器列表
+                                this.getcontainerList()
                             }).catch(err => this.$message({ type: 'warning', message: err.message }))
                     } catch (e) {
-                        console.warn(e.message)
+                        this.$message({ type: 'warning', message: e.message })
                     }
                 }
             })
         },
-        // 去镜像查看页
-        goimageInfo() {
-            this.$bus.$emit('switchCheckNav', '1-2')
-            this.goPath('imageinfo')
-        },
-        // 获取用户信息
-        async getUserInfo() {
+        // 获取容器列表
+        async getcontainerList() {
             try {
-                await this.$store.dispatch('getUserInfo', { user_id: this.userinfo.user_id })
+                const { page, limit } = this
+                let querySearch = 'user_id'
+                let value = this.user_id
+
+                await this.$store.dispatch('getcontainerList', JSON.stringify({ querySearch, value, page, limit }))
             } catch (e) {
-                console.warn(e.message)
+                this.$message({ type: 'warning', message: e.message })
             }
+        },
+        // 删除容器
+        async delcontainer(index, rows) {
+            const title = rows[index].name
+            const params = { id: rows[index].id }
+            await this.$confirm(`是否删除容器 [ ${title} ] ?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(async () => {
+                try {
+                    await this.$store.dispatch('delcontainer', JSON.stringify(params))
+                        .then(res => {
+                            this.$message({ type: 'success', message: res })
+                            // 重新获取容器列表
+                            this.getcontainerList()
+                        }).catch(err => this.$message({ type: 'warning', message: err.message }))
+                } catch (e) {
+                    this.$message({ type: 'warning', message: e.message })
+                }
+            }).catch(() => {
+                this.$message({ type: 'info', message: '已取消' })
+            })
         },
     },
 }
 </script>
 
 <style lang="less" scoped>
-.header {
-    width: 100%;
-    height: 100px;
-    background-color: #324057;
-    box-sizing: border-box;
-    padding: 50px 20% 10px;
-    overflow: hidden;
-
-    .title {
-        font-size: 25px;
-        color: #fff;
-    }
-}
-
-.main {
-    width: 100%;
-    height: calc(100% - 100px);
-    box-sizing: border-box;
-    padding: 20px 10%;
-
-    .exist-image {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0 20%;
-    }
+.container-list {
 
     .search {
         width: 100%;
-        height: 70px;
+        height: 80px;
+        box-sizing: border-box;
+        border: 1px solid rgb(220, 220, 220);
+        padding-top: 15px;
         overflow: hidden;
 
         .search-form {
             min-width: 400px;
             justify-content: center;
         }
-    }
-
-    .table {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0 20%;
     }
 }
 </style>

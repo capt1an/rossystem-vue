@@ -36,7 +36,8 @@
             <el-table-column label="操作" header-align="center" align="center">
                 <template slot-scope="scope">
                     <div class="handler">
-                        <el-button @click.native.prevent="startContainer(scope.$index, containerlist)" type="info">
+                        <el-button @click.native.prevent="startContainer(scope.$index, containerlist)"
+                            @click.native.prevent.stop="containerDialog = true" type="info">
                             启动
                         </el-button>
                         <el-button @click.native.prevent="delcontainer(scope.$index, containerlist)" type="danger">
@@ -88,10 +89,19 @@
                 <el-button @click.native.prevent.stop="resetForm('containerAddForm')">重 置</el-button>
             </div>
         </el-dialog>
+        <!--容器界面-->
+        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%" :before-close="handleClose">
+            <iframe src="http://127.0.0.1:8080" frameborder="0" width="100%" height="600px"></iframe>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="containerDialog = false">关 闭</el-button>
+                <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+import { Upload } from 'element-ui'
 import { mapGetters } from 'vuex'
 export default {
     name: 'containerList',
@@ -177,7 +187,8 @@ export default {
                 querySearch: '',
                 key: '',
             },
-            containerAddDialog: false, // 发布新容器的表单
+            containerAddDialog: false, // 添加新容器的表单
+            containerDialog: false, // 容器的表单
             page: 1, // 当前页
             limit: 8, // 初始化每页条目数
             page_sizes: [8, 16, 30, 50, 100], // 个数选择器

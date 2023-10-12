@@ -43,13 +43,13 @@
             </div>
         </div>
         <div class="front-home maxWH w flex-center" v-if="(identity === user_identity_user)">
-            <span class="title">算法实验管理展示系统</span>
+            <span class="title">机器人实验平台</span>
             <div class="intro flex-center">
-                <p>欢迎使用算法实验管理展示系统, 你可以在上方导航或下方按钮处新建算法实验</p>
+                <p>欢迎使用机器人实验平台, 你可以在上方导航或下方按钮处新建容器</p>
                 <p>可视化RL可以在上方导航或右上方个人中心处查看, 祝你使用愉快</p>
             </div>
             <div class="btn">
-                <el-button type="primary" @click.native.prevent.stop="goimageSeat">新建实验</el-button>
+                <el-button type="primary" @click.native.prevent.stop="goimageSeat">新建容器</el-button>
             </div>
         </div>
     </div>

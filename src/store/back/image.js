@@ -1,4 +1,4 @@
-import { reqGetimageList, reqDelimage, reqClearTimeoutimage } from '@/api'
+import { reqGetimageList, reqAddimage, reqDelimage } from '@/api'
 
 
 
@@ -8,7 +8,7 @@ const state = {
 }
 
 const mutations = {
-    // 获取预约信息列表
+    // 获取镜像列表
     GETIMAGELIST(state, result) {
         state.imagelist = result.data
         state.image_count = result.image_count
@@ -16,12 +16,12 @@ const mutations = {
 }
 
 const actions = {
-    // 获取预约信息列表
+    // 获取镜像列表
     async getimageList({ commit }, image) {
         console.log(image)
         let result = await reqGetimageList(image)
         result = result.data
-        // console.log(result)
+        console.log(result)
         if (result.code === 0) {
             commit('GETIMAGELIST', result)
             return result.msg || 'ok'
@@ -29,28 +29,52 @@ const actions = {
             return Promise.reject(new Error(result.msg || 'fail'))
         }
     },
-    // 删除超时的预约信息
-    async delimage({ commit }, info = {}) {//eslint-disable-line no-unused-vars
-        let result = await reqDelimage(info)
+
+    // 添加镜像
+    async addimage({ commit }, image) {//eslint-disable-line no-unused-vars
+        let result = await reqAddimage(image)
         result = result.data
-        // console.log(result)
-        if (result.status === 0) {
+        console.log(result)
+        if (result.code === 0) {
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
         }
     },
-    // 清空超时的预约记录
-    async clearTimeoutimage({commit},_){//eslint-disable-line no-unused-vars
-        let result = await reqClearTimeoutimage()
+
+    // 删除镜像
+    async delimage({ commit }, image_id) {//eslint-disable-line no-unused-vars
+        let result = await reqDelimage(image_id)
         result = result.data
         console.log(result)
-        if (result.status === 0) {
+        if (result.code === 0) {
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
-        } 
+        }
     },
+    // // 删除超时的预约信息
+    // async delimage({ commit }, info = {}) {//eslint-disable-line no-unused-vars
+    //     let result = await reqDelimage(info)
+    //     result = result.data
+    //     // console.log(result)
+    //     if (result.status === 0) {
+    //         return result.msg || 'ok'
+    //     } else {
+    //         return Promise.reject(new Error(result.msg || 'fail'))
+    //     }
+    // },
+    // // 清空超时的预约记录
+    // async clearTimeoutimage({commit},_){//eslint-disable-line no-unused-vars
+    //     let result = await reqClearTimeoutimage()
+    //     result = result.data
+    //     console.log(result)
+    //     if (result.status === 0) {
+    //         return result.msg || 'ok'
+    //     } else {
+    //         return Promise.reject(new Error(result.msg || 'fail'))
+    //     } 
+    // },
 }
 
 const getters = {

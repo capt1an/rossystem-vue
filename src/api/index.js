@@ -56,8 +56,11 @@ export const reqDelcontainer = ( data ) => axios({ url: '/container/delete', dat
 // 获取镜像列表
 export const reqGetimageList = (data) => axios({ url: '/image/list', data, method: 'post' })
 
-// 根据id删除超时的预约信息
-export const reqDelimage = ({ image_id, seat_id }) => axios({ url: `/back/image/delimage/${image_id}/${seat_id}`, method: 'get' })
+// 添加实验
+export const reqAddimage = (data) => axios({ url: '/image/add', data, method: 'post' })
+
+// 删除镜像
+export const reqDelimage = (data) => axios({ url: '/image/delete', method: 'post' })
 
 // 清空超时记录
 export const reqClearTimeoutimage = () => axios({ url: '/back/image/delallimage', method: 'get' })

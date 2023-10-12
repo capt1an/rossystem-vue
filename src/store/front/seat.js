@@ -8,7 +8,7 @@ const state = {
 
 const mutations = {
     // 获取座位列表
-    FRONTGETSEATLIST(state, front_seat_list) {
+    FRONTGETIMAGELIST(state, front_seat_list) {
         state.front_seat_list = front_seat_list
     },
     // 获取预约信息
@@ -19,12 +19,12 @@ const mutations = {
 
 const actions = {
     // 获取座位列表
-    async frontGetSeatList({ commit }, seat = {}) {
-        let result = await reqFrontGetSeatList(seat)
+    async frontGetImageList({ commit }) {
+        let result = await reqGetimageList()
         result = result.data
         // console.log(result)
         if (result.status === 0) {
-            commit('FRONTGETSEATLIST', result.data)
+            commit('FRONTGETIMAGELIST', result.data)
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
