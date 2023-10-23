@@ -103,7 +103,7 @@ const actions = {
     async userLogin({ commit }, user) {
         let result = await reqUserLogin(user)
         console.log(result)
-        if (result.data.code === 0) {
+        if (result.data.status === 0) {
             // localStorage.setItem('userInfo', JSON.stringify(result.data.data))
             commit('USERLOGIN', result.data.data)
             setUserId(result.data.id)

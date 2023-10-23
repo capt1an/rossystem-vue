@@ -23,7 +23,10 @@
         <el-table :data="containerlist" border style="width: 100%" max-height="250">
             <el-table-column prop="name" label="容器名" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="port" label="端口" show-overflow-tooltip>
+            <el-table-column prop="ports" label="端口" show-overflow-tooltip>
+                <template #default="{ row }">
+                    <span>{{ row.ports.join(', ') }}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="username" label="用户名" show-overflow-tooltip>
             </el-table-column>
@@ -66,7 +69,7 @@
                 </el-form-item>
                 <el-form-item label="选择镜像" prop="image">
                     <el-select v-model="containerAddForm.imageid" clearable placeholder="镜像">
-                        <el-option v-for="item in images" :key="item.value" :label="item.label" :value="item.value" />
+                        <el-option v-for="item in imagelist" :key="item.id" :label="item.content" :value="item.version" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="版本号" prop="versionid">
@@ -90,8 +93,8 @@
             </div>
         </el-dialog>
         <!--容器界面-->
-        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%" :before-close="handleClose">
-            <iframe src="http://127.0.0.1:8080" frameborder="0" width="100%" height="600px"></iframe>
+        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%">
+            <iframe src="`http://127.0.0.1:${startport}`" frameborder="0" width="100%" height="600px"></iframe>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="containerDialog = false">关 闭</el-button>
                 <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
@@ -107,21 +110,7 @@ export default {
     name: 'containerList',
     data() {
         const port = ''
-
-        const images = [
-            {
-                value: '1',
-                label: 'novnc',
-            },
-            {
-                value: '2',
-                label: 'vscode',
-            },
-            {
-                value: '3',
-                label: 'roslab',
-            }
-        ]
+        const startport = 0
         const options = [
             {
                 value: 'name',
@@ -174,8 +163,8 @@ export default {
         // }
         return {
             options,
-            images,
             port,
+            startport,//启动端口号
             // 表单验证规则
             rules: {
                 name: [{ required: true, trigger: ['blur', 'change'], validator: validataTitle }],
@@ -196,14 +185,14 @@ export default {
             containerAddForm: {
                 name: '',
                 userid: '',
-                imageid: '',
+                imageid: 0,
                 versionid: '',
                 ports: [],
             },
         }
     },
     computed: {
-        ...mapGetters(['user_id', 'userlist', 'containerlist', 'container_count'])
+        ...mapGetters(['user_id', 'userlist', 'imagelist', 'containerlist', 'container_count'])
     },
     mounted() {
         this.getcontainerList()
@@ -216,10 +205,13 @@ export default {
         // 启动容器
         startContainer(index, rows) {
             const params = { id: rows[index].id, cmd: 'start' }
+            
+            this.startport = this.containerlist[index].ports[0]
+            
+            console.log(this.startport)
             try {
                 this.$store.dispatch('startcontainer', JSON.stringify(params))
                     .then(res => {
-                        this.resetForm(formname)
                         this.$message({ type: 'success', message: res })
                         // 重新获取容器列表
                         // this.getcontainerList()
@@ -228,6 +220,23 @@ export default {
                 this.$message({ type: 'warning', message: e.message })
             }
         },
+
+        // 关闭容器
+        // stopContainer(index, rows) {
+        //     const params = { id: rows[index].id, cmd: 'start' }
+        //     try {
+        //         this.$store.dispatch('startcontainer', JSON.stringify(params))
+        //             .then(res => {
+        //                 this.resetForm(formname)
+        //                 this.$message({ type: 'success', message: res })
+        //                 // 重新获取容器列表
+        //                 // this.getcontainerList()
+        //             }).catch(err => this.$message({ type: 'warning', message: err.message }))
+        //     } catch (e) {
+        //         this.$message({ type: 'warning', message: e.message })
+        //     }
+        // },
+
         // 搜索
         search() {
             this.page = 1

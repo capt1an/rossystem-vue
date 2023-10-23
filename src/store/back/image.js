@@ -22,7 +22,7 @@ const actions = {
         let result = await reqGetimageList(image)
         result = result.data
         console.log(result)
-        if (result.code === 0) {
+        if (result.status === 0) {
             commit('GETIMAGELIST', result)
             return result.msg || 'ok'
         } else {
@@ -35,7 +35,7 @@ const actions = {
         let result = await reqAddimage(image)
         result = result.data
         console.log(result)
-        if (result.code === 0) {
+        if (result.status === 0) {
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
@@ -47,7 +47,7 @@ const actions = {
         let result = await reqDelimage(image_id)
         result = result.data
         console.log(result)
-        if (result.code === 0) {
+        if (result.status === 0) {
             return result.msg || 'ok'
         } else {
             return Promise.reject(new Error(result.msg || 'fail'))
