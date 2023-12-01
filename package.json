@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@babel/plugin-transform-reserved-words": "^7.22.5",
     "amfe-flexible": "^2.2.1",
     "axios": "^1.2.0",
     "core-js": "^3.8.3",
@@ -42,12 +43,12 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-        "generator-star-spacing": "off",
-    "no-tabs":"off",
-    "no-unused-vars":"off",
-    "no-console":"off",
-    "no-irregular-whitespace":"off",
-    "no-debugger": "off"
+      "generator-star-spacing": "off",
+      "no-tabs": "off",
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "no-irregular-whitespace": "off",
+      "no-debugger": "off"
     }
   },
   "browserslist": [

@@ -22,11 +22,11 @@
         <el-table :data="imagelist" border style="width: 100%" max-height="250">
             <el-table-column prop="id" label="序号">
             </el-table-column>
-            <el-table-column prop="image_name" label="实验项目">
+            <el-table-column prop="version" label="镜像">
             </el-table-column>
             <el-table-column prop="createTime" label="创建时间">
             </el-table-column>
-            <el-table-column prop="content" label="说明">
+            <el-table-column prop="content" label="镜像说明">
             </el-table-column>
             <el-table-column label="操作" header-align="center">
                 <template slot-scope="scope">
@@ -47,16 +47,13 @@
         <!-- 添加镜像 -->
         <el-dialog title="添加镜像" :visible.sync="imageAddDialog">
             <el-form ref="imageAddForm" :model="imageAddForm" label-width="120px" :rules="rules">
-                <el-form-item label="名称" prop="name">
-                    <el-input v-model.trim="imageAddForm.name" autocomplete="off" placeholder="请输入实验名称">
+
+                <el-form-item label="镜像" prop="version">
+                    <el-input v-model.trim="imageAddForm.version" autocomplete="off" placeholder="请输入镜像+版本号">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="版本" prop="version">
-                    <el-input v-model.trim="imageAddForm.version" autocomplete="off" placeholder="请输入版本号">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="说明" prop="description">
-                    <el-input v-model.trim="imageAddForm.description" autocomplete="off">
+                <el-form-item label="说明" prop="content">
+                    <el-input v-model.trim="imageAddForm.content" autocomplete="off">
                     </el-input>
                 </el-form-item>
                 <el-form-item label="镜像" prop="images">
@@ -139,10 +136,10 @@ export default {
             },
 
             imageAddForm: {
-                name: '',
+                //name: '',
                 images: [],
                 version: '',
-                description: '',
+                content: '',
             },
         }
     },
@@ -197,6 +194,7 @@ export default {
         async delimage(index, rows) {
             const title = rows[index].id
             const params = { id: rows[index].id }
+
             await this.$confirm(`是否删除镜像 [ ${title} ] ?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',

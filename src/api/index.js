@@ -53,6 +53,9 @@ export const reqGetcontainerList = (data) => axios({ url: '/container/list', dat
 // 删除容器
 export const reqDelcontainer = ( data ) => axios({ url: '/container/delete', data, method: 'post' })
 
+// 关闭容器
+export const reqStopcontainer = ( data ) => axios({ url: '/container/stop', data, method: 'post' })
+
 // 获取镜像列表
 export const reqGetimageList = (data) => axios({ url: '/image/list', data, method: 'post' })
 
@@ -60,7 +63,7 @@ export const reqGetimageList = (data) => axios({ url: '/image/list', data, metho
 export const reqAddimage = (data) => axios({ url: '/image/add', data, method: 'post' })
 
 // 删除镜像
-export const reqDelimage = (data) => axios({ url: '/image/delete', method: 'post' })
+export const reqDelimage = (data) => axios({ url: '/image/delete', data,  method: 'post' })
 
 // 清空超时记录
 export const reqClearTimeoutimage = () => axios({ url: '/back/image/delallimage', method: 'get' })

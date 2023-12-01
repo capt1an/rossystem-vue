@@ -1,4 +1,4 @@
-import { reqAddcontainer, reqStartcontainer, reqGetcontainerList, reqDelcontainer } from '@/api'
+import { reqAddcontainer, reqStartcontainer, reqGetcontainerList, reqDelcontainer, reqStopcontainer } from '@/api'
 
 
 
@@ -54,6 +54,17 @@ const actions = {
     // 删除容器
     async delcontainer({ commit }, container_id) {//eslint-disable-line no-unused-vars
         let result = await reqDelcontainer(container_id)
+        result = result.data
+        console.log(result)
+        if (result.status === 0) {
+            return result.msg || 'ok'
+        } else {
+            return Promise.reject(new Error(result.msg || 'fail'))
+        }
+    },
+    // 关闭容器
+    async stopcontainer({ commit }, container_id) {//eslint-disable-line no-unused-vars
+        let result = await reqStopcontainer(container_id)
         result = result.data
         console.log(result)
         if (result.status === 0) {
