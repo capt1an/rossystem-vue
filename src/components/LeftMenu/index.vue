@@ -60,9 +60,10 @@ export default {
                     name: '容器管理',
                     path: 'container',
                     children: [
-                        { path: 'containerlist', name: '容器列表' }
+                        { path: 'containerlist', name: '容器列表' },
+                        { path: 'rosbaglist', name: '日志管理' }
                     ]
-                },
+                }
             ],
             // 用户导航
             items: []

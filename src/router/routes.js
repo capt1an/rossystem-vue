@@ -1,8 +1,8 @@
 //  路由配置信息
 // redirect(重定向)和component(组件)在绑定路由的时候必须有一个
-// component(组件)可以是自己先定义后使用 也可以从其他文件导入 
+// component(组件)可以是自己先定义后使用 也可以从其他文件导入
 // 定义一个名为Home的组件：const Home = {template:'<div>Home</div>'} 绑定这个组件 {path: 'home', component: Home}
-// 导入格式 {path: 'home',component: () => import('')} 
+// 导入格式 {path: 'home',component: () => import('')}
 export default [
     {
         path: '/',
@@ -39,6 +39,10 @@ export default [
                     {
                         path: 'containerlist',
                         component: () => import('@/views/Index/Back/containerList')
+                    },
+                    {
+                        path: 'rosbaglist',
+                        component: () => import('@/views/Index/Back/ROSBagList')
                     },
                     {
                         path: 'imagelist',
