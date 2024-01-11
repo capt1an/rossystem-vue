@@ -1,5 +1,7 @@
 // 各种配置
 
+export const docker_url = 'http://115.25.41.98'
+
 // 用户状态
 export const user_status_true = '正常'
 export const user_status_false = '封禁'

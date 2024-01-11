@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { user_identity_admin } from '@/config'
+import { user_identity_admin, docker_url } from '@/config'
 import { mapGetters } from 'vuex'
 export default {
     name: 'LeftMenu',

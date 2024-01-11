@@ -14,6 +14,8 @@ module.exports = defineConfig({
       "/api": {
         target: "http://localhost:8022",
       }
-    }
+    },
+    port: '8080',
+    host: '0.0.0.0'
   }
 })

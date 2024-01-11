@@ -106,7 +106,7 @@
         </el-dialog>
         <!--容器界面-->
         <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%">
-            <iframe :src="'http://127.0.0.1:' + startport" frameborder="0" width="100%" height="600px"></iframe>
+            <iframe :src="docker_url + ':' + startport" frameborder="0" width="100%" height="600px"></iframe>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="containerDialog = false">关 闭</el-button>
                 <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
