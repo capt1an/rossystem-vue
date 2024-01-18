@@ -1,25 +1,59 @@
 <template>
     <div class="container-list maxWH clearfix">
+            <!-- 搜索 -->
+        <div class="search">
+            <el-form ref="searchcontainerForm" class="flex maxWH search-form" :model="searchForm" label-width="80px">
+                <el-select v-model="searchForm.querySearch" clearable placeholder="请选择搜索类型">
+                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
+                <el-form-item label="" prop="key">
+                    <el-input v-model.trim="searchForm.key" placeholder="请输入关键字"></el-input>
+                </el-form-item>
+                <el-form-item class="flex" style="margin-left: -70px;overflow: hidden;">
+                    <el-button type="primary" @click.native.prevent.stop="search">搜索</el-button>
+                    <el-button @click.native.prevent.stop="resetForm('searchForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <!-- 添加 -->
+        <el-button type="primary" @click.native.prevent.stop="containerAddDialog = true"
+            style="margin: 15px 0;">添加容器</el-button>
         <!-- 列表显示容器 -->
         <el-table :data="containerlist" border style="width: 100%" max-height="250">
             <el-table-column prop="name" label="容器名" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="port" label="端口" show-overflow-tooltip>
+            <el-table-column prop="ports" label="端口" show-overflow-tooltip>
+                <template #default="{ row }">
+                    <span>{{ row.ports.join(', ') }}</span>
+                </template>
             </el-table-column>
             <el-table-column prop="username" label="用户名" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="nickName" label="昵称" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="status" label="状态" show-overflow-tooltip>
+                <template #default="{ row }">
+                    <p v-if="row.status === 0">创建</p>
+                    <p v-else-if="row.status === 1">启动</p>
+                    <p v-else-if="row.status === 2">关闭</p>
+                    <p v-else>未知状态</p>
+                  </template>
             </el-table-column>
             <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip>
             </el-table-column>
             <el-table-column label="操作" header-align="center" align="center">
                 <template slot-scope="scope">
                     <div class="handler">
+                                            <el-button @click.native.prevent="startContainer(scope.$index, containerlist)">
+                            启动
+                        </el-button>
                         <el-button @click.native.prevent="startContainer(scope.$index, containerlist)"
                             @click.native.prevent.stop="containerDialog = true" type="info">
-                            启动
+                                                        打开
+                        </el-button>
+                        <el-button @click.native.prevent="stopcontainer(scope.$index, containerlist)" type="danger">
+                            关闭
                         </el-button>
                         <el-button @click.native.prevent="delcontainer(scope.$index, containerlist)" type="danger">
                             删除
@@ -28,15 +62,11 @@
                 </template>
             </el-table-column>
         </el-table>
-
         <!-- 分页器 -->
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page"
             :page-sizes="page_sizes" :page-size="limit" layout="total, sizes, prev, pager, next, jumper"
             :total="container_count" style="padding: 10px 0;">
         </el-pagination>
-        <!-- 添加 -->
-        <el-button type="primary" @click.native.prevent.stop="containerAddDialog = true"
-            style="margin: 15px 0;">添加容器</el-button>
         <!-- 添加容器 -->
         <el-dialog title="添加容器" :visible.sync="containerAddDialog">
             <el-form ref="containerAddForm" :model="containerAddForm" label-width="120px" :rules="rules">
@@ -44,14 +74,9 @@
                     <el-input v-model.trim="containerAddForm.name" autocomplete="off" placeholder="请输入容器名称">
                     </el-input>
                 </el-form-item>
-                <!-- <el-form-item label="选择添加的用户" prop="user">
-                    <el-select v-model="containerAddForm.userid" clearable placeholder="用户名">
-                        <el-option v-for="item in userlist" :key="item.id" :label="item.username" :value="item.id" />
-                    </el-select>
-                </el-form-item> -->
                 <el-form-item label="选择镜像" prop="image">
                     <el-select v-model="containerAddForm.imageid" clearable placeholder="镜像">
-                        <el-option v-for="item in images" :key="item.value" :label="item.label" :value="item.value" />
+                        <el-option v-for="item in imagelist" :key="item.id" :label="item.version" :value="item.id" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="版本号" prop="versionid">
@@ -75,8 +100,8 @@
             </div>
         </el-dialog>
         <!--容器界面-->
-        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%" :before-close="handleClose">
-            <iframe src="http://127.0.0.1:8080" frameborder="0" width="100%" height="600px"></iframe>
+        <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%">
+            <iframe :src="docker_url_vue + ':' + startport" frameborder="0" width="100%" height="600px"></iframe>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="containerDialog = false">关 闭</el-button>
                 <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
@@ -87,11 +112,14 @@
 
 <script>
 import { Upload } from 'element-ui'
+import {  docker_url } from '@/config'
 import { mapGetters } from 'vuex'
 export default {
     name: 'containerList',
     data() {
         const port = ''
+        const startport = 0
+        const docker_url_vue = docker_url
 
         const images = [
             {
@@ -161,6 +189,8 @@ export default {
             options,
             images,
             port,
+                        docker_url_vue,
+            startport,//启动端口号
             // 表单验证规则
             rules: {
                 name: [{ required: true, trigger: ['blur', 'change'], validator: validataTitle }],
@@ -181,14 +211,14 @@ export default {
             containerAddForm: {
                 name: '',
                 userid: this.user_id,
-                imageid: '',
+                imageid: 0,
                 versionid: '',
                 ports: [],
             },
         }
     },
     computed: {
-        ...mapGetters(['user_id', 'userlist', 'containerlist', 'container_count'])
+        ...mapGetters(['user_id', 'userlist', 'imagelist', 'containerlist', 'container_count'])
     },
     mounted() {
         this.getcontainerList()
@@ -201,18 +231,40 @@ export default {
         // 启动容器
         startContainer(index, rows) {
             const params = { id: rows[index].id, cmd: 'start' }
+                        
+            this.startport = this.containerlist[index].ports[0]
+            //this.startport = 8888
+
+            console.log(this.startport)
             try {
                 this.$store.dispatch('startcontainer', JSON.stringify(params))
                     .then(res => {
-                        this.resetForm(formname)
+                        //this.resetForm(formname)
                         this.$message({ type: 'success', message: res })
                         // 重新获取容器列表
-                        // this.getcontainerList()
+                        this.getcontainerList()
                     }).catch(err => this.$message({ type: 'warning', message: err.message }))
             } catch (e) {
                 this.$message({ type: 'warning', message: e.message })
             }
         },
+
+                // 关闭容器
+        // stopContainer(index, rows) {
+        //     const params = { id: rows[index].id, cmd: 'start' }
+        //     try {
+        //         this.$store.dispatch('startcontainer', JSON.stringify(params))
+        //             .then(res => {
+        //                 this.resetForm(formname)
+        //                 this.$message({ type: 'success', message: res })
+        //                 // 重新获取容器列表
+        //                 this.getcontainerList()
+        //             }).catch(err => this.$message({ type: 'warning', message: err.message }))
+        //     } catch (e) {
+        //         this.$message({ type: 'warning', message: e.message })
+        //     }
+        // },
+
         // 搜索
         search() {
             this.page = 1
@@ -271,6 +323,29 @@ export default {
             } catch (e) {
                 this.$message({ type: 'warning', message: e.message })
             }
+        },
+                // 关闭容器
+        async stopcontainer(index, rows) {
+            const title = rows[index].name
+            const params = { id: rows[index].id }
+            await this.$confirm(`是否关闭容器 [ ${title} ] ?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(async () => {
+                try {
+                    await this.$store.dispatch('stopcontainer', JSON.stringify(params))
+                        .then(res => {
+                            this.$message({ type: 'success', message: res })
+                            // 重新获取容器列表
+                            this.getcontainerList()
+                        }).catch(err => this.$message({ type: 'warning', message: err.message }))
+                } catch (e) {
+                    this.$message({ type: 'warning', message: e.message })
+                }
+            }).catch(() => {
+                this.$message({ type: 'info', message: '已取消' })
+            })
         },
         // 删除容器
         async delcontainer(index, rows) {

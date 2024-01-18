@@ -106,7 +106,7 @@
         </el-dialog>
         <!--容器界面-->
         <el-dialog title="容器界面" :visible.sync="containerDialog" width="80%" height="100%">
-            <iframe :src="docker_url + ':' + startport" frameborder="0" width="100%" height="600px"></iframe>
+            <iframe :src="docker_url_vue + ':' + startport" frameborder="0" width="100%" height="600px"></iframe>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="containerDialog = false">关 闭</el-button>
                 <el-button type="primary" @click.native.prevent.stop="UploadFile">上传文件</el-button>
@@ -117,12 +117,14 @@
 
 <script>
 import { Upload } from 'element-ui'
+import {  docker_url } from '@/config'
 import { mapGetters } from 'vuex'
 export default {
     name: 'containerList',
     data() {
         const port = ''
         const startport = 0
+        const docker_url_vue = docker_url
         const options = [
             {
                 value: 'name',
@@ -176,6 +178,7 @@ export default {
         return {
             options,
             port,
+            docker_url_vue,
             startport,//启动端口号
             // 表单验证规则
             rules: {

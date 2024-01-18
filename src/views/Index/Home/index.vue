@@ -49,7 +49,7 @@
                 <p>可视化RL可以在上方导航或右上方个人中心处查看, 祝你使用愉快</p>
             </div>
             <div class="btn">
-                <el-button type="primary" @click.native.prevent.stop="goimageSeat">新建容器</el-button>
+                <el-button type="primary" @click.native.prevent.stop="goimageSeat">管理容器</el-button>
             </div>
         </div>
     </div>
