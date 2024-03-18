@@ -7,3 +7,11 @@ export function getdata(data) {
     data
   })
 }
+
+export function rosDataLogin(data) {
+  return request({
+    url: '/api/ros/login',
+    method: 'post',
+    data
+  })
+}
