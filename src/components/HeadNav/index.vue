@@ -4,7 +4,7 @@
             <el-row class="flex">
                 <el-col :span="12" class="logo-container flex">
                     <img src="../../assets/logo.png" alt="logo" class="logo">
-                    <span class="title">机器人实验平台</span>
+                    <span class="title">群智机器人遥操作实验系统</span>
                 </el-col>
                 <el-col :span="12" class="user flex">
                     <div class="userinfo flex-center">

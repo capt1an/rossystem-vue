@@ -1,23 +1,7 @@
 <template>
     <div class="container-list maxWH clearfix">
-            <!-- 搜索 -->
-        <div class="search">
-            <el-form ref="searchcontainerForm" class="flex maxWH search-form" :model="searchForm" label-width="80px">
-                <el-select v-model="searchForm.querySearch" clearable placeholder="请选择搜索类型">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-form-item label="" prop="key">
-                    <el-input v-model.trim="searchForm.key" placeholder="请输入关键字"></el-input>
-                </el-form-item>
-                <el-form-item class="flex" style="margin-left: -70px;overflow: hidden;">
-                    <el-button type="primary" @click.native.prevent.stop="search">搜索</el-button>
-                    <el-button @click.native.prevent.stop="resetForm('searchForm')">重置</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
         <!-- 添加 -->
-        <el-button type="primary" @click.native.prevent.stop="containerAddDialog = true"
+        <el-button type="primary" @click.native.prevent.stop="handleContainerAddClick"
             style="margin: 15px 0;">添加容器</el-button>
         <!-- 列表显示容器 -->
         <el-table :data="containerlist" border style="width: 100%" max-height="250">
@@ -73,6 +57,9 @@
                 <el-form-item label="名称" prop="name">
                     <el-input v-model.trim="containerAddForm.name" autocomplete="off" placeholder="请输入容器名称">
                     </el-input>
+                </el-form-item>
+                <el-form-item label="当前用户" prop="user">
+                    <el-input v-model.trim="containerAddForm.userid" :readonly="true" />
                 </el-form-item>
                 <el-form-item label="选择镜像" prop="image">
                     <el-select v-model="containerAddForm.imageid" clearable placeholder="镜像">
@@ -154,11 +141,11 @@ export default {
             },
         ]
         const validataTitle = (rule, value, callback) => {
-            const reg = /^[0-9A-Za-z\u4e00-\u9fa5,!.*&^%#+=-_:;。，！「」——~、@]{2,12}$/
+            const reg = /^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/
             if (value.trim().length <= 0) {
                 callback(new Error('请输入容器名称'))
             } else if (!reg.test(value.trim())) {
-                callback(new Error('容器名称由2到12位的数字、字母、汉字或部分符号组成'))
+                callback(new Error('容器名称由63位以内的数字、字母或连字符组成'))
             } else {
                 callback()
             }
@@ -210,7 +197,7 @@ export default {
             // 添加容器的表单
             containerAddForm: {
                 name: '',
-                userid: this.user_id,
+                userid: 0,
                 imageid: 0,
                 versionid: '',
                 ports: [],
@@ -222,8 +209,16 @@ export default {
     },
     mounted() {
         this.getcontainerList()
+        this.$store.dispatch('getUserId', JSON.stringify({ }))
+        this.containerAddForm.userid = this.user_id
     },
     methods: {
+        // 处理添加容器表单被点击后
+        async handleContainerAddClick(){
+            await this.$store.dispatch('getimageList', JSON.stringify({ querySearch: "", value: "", page: null, limit: null }))
+            await this.$store.dispatch('getUserList', JSON.stringify({ querySearch: "", value: "", page: null, limit: null }))
+            this.containerAddDialog = true;
+        },
         // 重置表单
         resetForm(formname) {
             this.$refs[formname].resetFields()

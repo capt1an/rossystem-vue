@@ -43,9 +43,9 @@
             </div>
         </div>
         <div class="front-home maxWH w flex-center" v-if="(identity === user_identity_user)">
-            <span class="title">机器人实验平台</span>
+            <span class="title">群智机器人遥操作实验系统</span>
             <div class="intro flex-center">
-                <p>欢迎使用机器人实验平台, 你可以在上方导航或下方按钮处新建容器</p>
+                <p>欢迎使用群智机器人遥操作实验系统, 你可以在上方导航或下方按钮处新建容器</p>
                 <p>可视化RL可以在上方导航或右上方个人中心处查看, 祝你使用愉快</p>
             </div>
             <div class="btn">

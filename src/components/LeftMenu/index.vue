@@ -63,6 +63,13 @@ export default {
                         { path: 'containerlist', name: '容器列表' },
                         { path: 'rosbaglist', name: '日志管理' }
                     ]
+                },{
+                    icon: 'el-icon-s-data',
+                    name: 'SSH访问',
+                    path: 'ssh',
+                    children: [
+                        { path: 'ssh', name: 'ssh访问' }
+                    ]
                 }
             ],
             // 用户导航

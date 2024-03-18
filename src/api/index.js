@@ -68,7 +68,8 @@ export const reqDelimage = (data) => axios({ url: '/image/delete', data,  method
 // 清空超时记录
 export const reqClearTimeoutimage = () => axios({ url: '/back/image/delallimage', method: 'get' })
 
-
+// 请求SSH命令
+export const reqSSH = (data) => axios({ url: '/cmd/query', data, method: 'post' })
 
 
 

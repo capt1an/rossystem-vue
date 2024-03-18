@@ -17,7 +17,7 @@
             </el-form>
         </div>
         <!-- 添加 -->
-        <el-button type="primary" @click.native.prevent.stop="containerAddDialog = true"
+        <el-button type="primary" @click.native.prevent.stop="handleContainerAddClick"
             style="margin: 15px 0;">添加容器</el-button>
         <!-- 列表显示容器 -->
         <el-table :data="containerlist" border style="width: 100%" max-height="250">
@@ -144,11 +144,11 @@ export default {
             },
         ]
         const validataTitle = (rule, value, callback) => {
-            const reg = /^[0-9A-Za-z\u4e00-\u9fa5,!.*&^%#+=-_:;。，！「」——~、@]{2,12}$/
+            const reg = /^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/
             if (value.trim().length <= 0) {
                 callback(new Error('请输入容器名称'))
             } else if (!reg.test(value.trim())) {
-                callback(new Error('容器名称由2到12位的数字、字母、汉字或部分符号组成'))
+                callback(new Error('容器名称由63位以内的数字、字母或连字符组成'))
             } else {
                 callback()
             }
@@ -213,6 +213,12 @@ export default {
         this.getcontainerList()
     },
     methods: {
+        // 处理添加容器表单被点击后
+        async handleContainerAddClick(){
+            await this.$store.dispatch('getimageList', JSON.stringify({ querySearch: "", value: "", page: null, limit: null }))
+            await this.$store.dispatch('getUserList', JSON.stringify({ querySearch: "", value: "", page: null, limit: null }))
+            this.containerAddDialog = true;
+        },
         // 重置表单
         resetForm(formname) {
             this.$refs[formname].resetFields()

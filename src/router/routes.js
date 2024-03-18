@@ -47,6 +47,10 @@ export default [
                     {
                         path: 'imagelist',
                         component: () => import('@/views/Index/Back/ImageList')
+                    },
+                    {
+                        path: 'ssh',
+                        component: () => import('@/views/Index/Back/SSH')
                     }
                 ]
             },

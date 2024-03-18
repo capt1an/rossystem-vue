@@ -52,7 +52,7 @@
                     <el-input v-model.trim="imageAddForm.version" autocomplete="off" placeholder="请输入镜像+版本号">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="说明" prop="content">
+                <el-form-item label="路径（可选）" prop="content">
                     <el-input v-model.trim="imageAddForm.content" autocomplete="off">
                     </el-input>
                 </el-form-item>
