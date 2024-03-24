@@ -2,6 +2,7 @@ import { reqUserLogin, reqGetUserInfo, reqUpdatePwd, reqSetEmail, reqSendFeedbac
 import { setAccount } from '@/utils/account'
 import { getIdentity, setIdentity, removeIdentity } from '@/utils/identity'
 import { getUserId, setUserId, removeUserId } from '@/utils/user_id'
+import {rosDataLogin} from "@/api/ros/dataview";
 
 
 
@@ -67,7 +68,7 @@ const mutations = {
         removeUserId()
         removeIdentity()
     },
-    // 
+    //
     // GETTIMEVALUEARR(state, result) {
     //     state.get_time_dict = result.data
     //     // 排序
@@ -102,6 +103,8 @@ const actions = {
     // 用户登录
     async userLogin({ commit }, user) {
         let result = await reqUserLogin(user)
+        let ret = await rosDataLogin(user)
+        console.log(ret)
         console.log(result)
         if (result.data.status === 0) {
             // localStorage.setItem('userInfo', JSON.stringify(result.data.data))

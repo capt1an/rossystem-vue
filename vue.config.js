@@ -11,6 +11,9 @@ module.exports = defineConfig({
   // 配置代理跨域
   devServer: {
     proxy: {
+      "/api/ros":{
+        target: "http://localhost:8023",
+      },
       "/api": {
         target: "http://localhost:8022",
       }
