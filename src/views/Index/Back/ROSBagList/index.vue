@@ -55,9 +55,9 @@
           <el-dialog
               :title="dialogTitle"
               :visible.sync="dialogVisible"
-              width="40%"
+              width="35%"
               :before-close="handleClose">
-            <json-view :data="dialogViewData"></json-view>
+            <vue-json-viewer :value="dialogViewData" :expand-depth=1 />
             <div class="block" style="margin-top:15px;">
               <el-pagination align='center' @size-change="handleJsonSizeChange" @current-change="handleJsonCurrentChange"
                              :current-page="currentJsonPage"
@@ -117,9 +117,9 @@
           <el-dialog
               :title="dialogQueryDataTitle"
               :visible.sync="dialogQueryDataVisible"
-              width="40%"
+              width="35%"
               :before-close="handleClose">
-            <json-view :data="dialogQueryViewData"></json-view>
+            <vue-json-viewer :value="dialogQueryViewData" :expand-depth=1 />
             <div class="block" style="margin-top:15px;">
               <el-pagination align='center' @size-change="handleQueryJsonSizeChange" @current-change="handleQueryJsonCurrentChange"
                              :current-page="currentQueryJsonPage"
@@ -155,7 +155,7 @@
 import {saveBagData} from "@/api/ros/saveBag";
 import {getDataStruct} from "@/api/ros/datastruct";
 import {getDataFromTopic, queryParamsStruct, querySearchStruct, viewAllData} from "@/api/ros/getData";
-import jsonView from 'vue-json-views'
+import VueJsonViewer from 'vue-json-viewer';
 import VueProgressBar from 'vue-progressbar';
 
 
@@ -172,7 +172,7 @@ export default {
   name: "ROSBagList",
   components: {
     CmdVel,
-    jsonView,
+    VueJsonViewer,
     VueProgressBar,
     Form,
     RosOut,
